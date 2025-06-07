@@ -1,0 +1,22 @@
+{
+  "name": "taller-playwright-atenea",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juantor16/taller-playwright-atenea.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/juantor16/taller-playwright-atenea/issues"
+  },
+  "homepage": "https://github.com/juantor16/taller-playwright-atenea#readme",
+  "description": "",
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.15.29"
+  }
+}
