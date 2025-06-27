@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/loginPage';
 import TestData from '../data/testData.json';
 import { DashboardPage } from '../pages/dashboardPage';
+import { BackendUtils } from '../utils/backendUtils';
 
 let loginPage: LoginPage;
 let dashboardPage: DashboardPage;
@@ -19,23 +20,10 @@ test('TC-7 Verificar inicio de sesión exitoso con credenciales válidas', async
 });
 
 test('TC-11 Loguearse con nuevo usuario creado por backend', async ({ page, request }) => {
-  const email = (TestData.usuarioValido.email.split('@')[0]) + Date.now().toString() + '@' + TestData.usuarioValido.email.split('@')[1];
-  const response = await request.post('http://localhost:6007/api/auth/signup', {
-    headers: {
-      'Accept': 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json',
-    },
-    data: {
-      firstName: TestData.usuarioValido.nombre,
-      lastName: TestData.usuarioValido.apellido,
-      email: email,
-      password: TestData.usuarioValido.contraseña,
-    }
-  });
-  expect(response.status()).toBe(201);
+  const nuevoUsuario = await BackendUtils.crearUsuarioPorAPI(request, TestData.usuarioValido);
 
   const responsePromiseLogin = page.waitForResponse('http://localhost:6007/api/auth/login');
-  await loginPage.completarYHacerClickBotonLogin({email: email, contraseña: TestData.usuarioValido.contraseña});
+  await loginPage.completarYHacerClickBotonLogin(nuevoUsuario);
 
   const responseLogin = await responsePromiseLogin;
   const responseBodyLoginJson = await responseLogin.json();
@@ -48,7 +36,7 @@ test('TC-11 Loguearse con nuevo usuario creado por backend', async ({ page, requ
     id: expect.any(String),
     firstName: TestData.usuarioValido.nombre,
     lastName: TestData.usuarioValido.apellido,
-    email: email,
+    email: nuevoUsuario.email,
   }));
 
 
