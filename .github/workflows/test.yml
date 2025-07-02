@@ -44,14 +44,17 @@ jobs:
       - name: Levantar backend
         run: |
           cd app/backend
-          npm run dev &
+          npm run dev > backend.log 2>&1 &
         env:
           MONGO_URI: ${{ env.MONGO_URI }}
           JWT_SECRET: ${{ env.JWT_SECRET }}
           PORT: ${{ env.PORT }}
 
+      - name: Instalar wait-on
+        run: npm install -g wait-on
+
       - name: Esperar backend
-        run: npx wait-on http://localhost:${{ env.PORT }}/api/auth/login
+        run: wait-on tcp:6007
 
       - name: Instalar dependencias frontend
         run: |
@@ -61,12 +64,12 @@ jobs:
       - name: Levantar frontend
         run: |
           cd app/frontend
-          npm run dev &
+          npm run dev > frontend.log 2>&1 &
         env:
           VITE_API_BASE: ${{ env.VITE_API_BASE }}
 
       - name: Esperar frontend
-        run: npx wait-on http://localhost:3000
+        run: wait-on http://localhost:3000
 
       - name: Instalar y correr tests
         run: |
