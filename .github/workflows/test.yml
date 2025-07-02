@@ -19,8 +19,8 @@ jobs:
     env:
       MONGO_URI: ${{ secrets.MONGO_URI }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      PORT: 6007
-      VITE_API_BASE: http://localhost:6007/api
+      PORT: 3000
+      VITE_API_BASE: http://localhost:3000/api
 
     steps:
       - name: Checkout repo actual (con el workflow)
@@ -54,7 +54,7 @@ jobs:
         run: npm install -g wait-on
 
       - name: Esperar backend
-        run: wait-on tcp:6007
+        run: wait-on tcp:3000
 
       - name: Instalar dependencias frontend
         run: |
