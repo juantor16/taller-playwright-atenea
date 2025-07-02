@@ -92,7 +92,7 @@ jobs:
 
           # Clonar gh-pages branch en carpeta temporal
           cd $RUNNER_TEMP
-          git clone --depth=1 --branch=gh-pages https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} gh-pages
+          git clone --depth=1 --branch=gh-pages https://x-access-token:${{ secrets.GH_PAGES_PAT }}@github.com/${{ github.repository }} gh-pages
 
           cd gh-pages
 
