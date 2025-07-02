@@ -71,12 +71,12 @@ jobs:
       - name: Esperar frontend
         run: wait-on http://localhost:3000
 
-      - name: Instalar y correr tests
+      - name: Instalar y correr tests (todos los proyectos)
         run: |
           cd tests
           npm install
           npx playwright install
-          npx playwright test --reporter=html
+          npx playwright test --all-projects --reporter=html --reporter-options outputFolder=playwright-report
 
       - name: Guardar reportes como artifacts
         if: always()
