@@ -76,7 +76,7 @@ jobs:
           cd tests
           npm install
           npx playwright install
-          npx playwright test --reporter=html
+          npx playwright test --reporter=html --project=setup
 
       - name: Guardar reportes como artifacts
         if: always()
