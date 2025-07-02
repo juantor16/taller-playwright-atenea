@@ -32,7 +32,7 @@ setup('Generar usuario que envía dinero', async ({ page, request }) => {
 
 
 setup('Crear, Loguearse y agregar cuenta usuario Valido', async ({ page, request }) => {
-    const nuevoUsuario = await BackendUtils.crearUsuarioPorAPI(request, TestData.usuarioValido);
+    const nuevoUsuario = await BackendUtils.crearUsuarioPorAPI(request, TestData.usuarioValido, false);
     await loginPage.completarYHacerClickBotonLogin(nuevoUsuario);
     await expect(dashboardPage.dashboardTitle).toBeVisible();
     await dashboardPage.botonDeAgregarCuenta.click();
