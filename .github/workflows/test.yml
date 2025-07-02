@@ -73,11 +73,10 @@ jobs:
 
       - name: Instalar y correr tests (proyectos setup + chromium)
         run: |
-          cd tests
           npm install
           npx playwright install
-          npx playwright test --reporter=html --project=setup
-
+          npx playwright test --reporter=html
+          
       - name: Guardar reportes como artifacts
         if: always()
         uses: actions/upload-artifact@v4
