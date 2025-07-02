@@ -1,4 +1,4 @@
-name: CI - Backend + Frontend + Tests
+name: CI - Clonando App y Ejecutando Tests
 
 on:
   push:
@@ -23,47 +23,52 @@ jobs:
       VITE_API_BASE: http://localhost:6007/api
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repo actual (con el workflow)
         uses: actions/checkout@v3
 
-      - name: Set up Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install backend dependencies
+      - name: Clonar repo Athena Redux Bank
         run: |
-          cd backend
+          git clone https://github.com/Atenea-Conocimientos/redux-athena-bank.git app
+
+      - name: Crear archivo .env para backend
+        run: |
+          echo "MONGO_URI=${{ env.MONGO_URI }}" >> app/backend/.env
+          echo "JWT_SECRET=${{ env.JWT_SECRET }}" >> app/backend/.env
+          echo "PORT=${{ env.PORT }}" >> app/backend/.env
+
+      - name: Instalar dependencias backend
+        run: |
+          cd app/backend
           npm install
 
-      - name: Start backend
+      - name: Levantar backend
         run: |
-          cd backend
+          cd app/backend
           npm run dev &
         env:
           MONGO_URI: ${{ env.MONGO_URI }}
           JWT_SECRET: ${{ env.JWT_SECRET }}
           PORT: ${{ env.PORT }}
 
-      - name: Wait for backend to be ready
+      - name: Esperar backend
         run: npx wait-on http://localhost:${{ env.PORT }}/api/auth/login
 
-      - name: Install frontend dependencies
+      - name: Instalar dependencias frontend
         run: |
-          cd frontend
+          cd app/frontend
           npm install
 
-      - name: Start frontend
+      - name: Levantar frontend
         run: |
-          cd frontend
+          cd app/frontend
           npm run dev &
         env:
           VITE_API_BASE: ${{ env.VITE_API_BASE }}
 
-      - name: Wait for frontend to be ready
+      - name: Esperar frontend
         run: npx wait-on http://localhost:3000
 
-      - name: Install and run Playwright tests
+      - name: Instalar y correr tests
         run: |
           cd tests
           npm install
