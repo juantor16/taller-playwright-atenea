@@ -19,8 +19,8 @@ jobs:
     env:
       MONGO_URI: ${{ secrets.MONGO_URI }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      PORT: 600
-      VITE_API_BASE: http://localhost:600/api
+      PORT: 6007
+      VITE_API_BASE: http://localhost:6007/api
 
     steps:
       - name: Checkout repo actual (con el workflow)
