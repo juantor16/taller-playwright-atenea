@@ -30,10 +30,15 @@ setup('Generar usuario que envía dinero', async ({ page, request }) => {
     await page.context().storageState({ path: usuarioEnviaAuthFile });
 })
 
-setup('Loguearse con usuario que recibe dinero', async ({ page, request }) => {
-    await loginPage.completarYHacerClickBotonLogin(TestData.usuarioValido);
+
+setup('Crear, Loguearse y agregar cuenta usuario Valido', async ({ page, request }) => {
+    const nuevoUsuario = await BackendUtils.crearUsuarioPorAPI(request, TestData.usuarioValido);
+    await loginPage.completarYHacerClickBotonLogin(nuevoUsuario);
     await expect(dashboardPage.dashboardTitle).toBeVisible();
+    await dashboardPage.botonDeAgregarCuenta.click();
+    await modalCrearCuenta.seleccionarTipoDeCuenta('Débito');
+    await modalCrearCuenta.completarMonto('1000');
+    await modalCrearCuenta.botonCrearCuenta.click();
+    await expect(page.getByText('Cuenta creada exitosamente')).toBeVisible();
     await page.context().storageState({ path: usuarioRecibeAuthFile })
 })
-
-
