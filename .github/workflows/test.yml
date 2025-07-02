@@ -109,3 +109,8 @@ jobs:
           git commit -m "📊 Reporte Playwright - Build $GITHUB_RUN_NUMBER"
           git push origin gh-pages
 
+      - name: Imprimir link del reporte en consola
+        run: |
+            echo "🔗 Reporte disponible en: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/report-${{ github.run_number }}/"
+
+
