@@ -1,0 +1,115 @@
+name: CI - Clonando App y Ejecutando Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mongo:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
+
+    env:
+      MONGO_URI: ${{ secrets.MONGO_URI }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      PORT: 6007
+      VITE_API_BASE: http://localhost:6007/api
+
+    steps:
+      - name: Checkout repo actual (con el workflow)
+        uses: actions/checkout@v3
+
+      - name: Clonar repo Athena Redux Bank
+        run: |
+          git clone https://github.com/Atenea-Conocimientos/redux-athena-bank.git app
+
+      - name: Crear archivo .env para backend
+        run: |
+          echo "MONGO_URI=${{ env.MONGO_URI }}" >> app/backend/.env
+          echo "JWT_SECRET=${{ env.JWT_SECRET }}" >> app/backend/.env
+          echo "PORT=${{ env.PORT }}" >> app/backend/.env
+
+      - name: Instalar dependencias backend
+        run: |
+          cd app/backend
+          npm install
+
+      - name: Levantar backend
+        run: |
+          cd app/backend
+          npm run dev > backend.log 2>&1 &
+        env:
+          MONGO_URI: ${{ env.MONGO_URI }}
+          JWT_SECRET: ${{ env.JWT_SECRET }}
+          PORT: ${{ env.PORT }}
+
+      - name: Instalar wait-on
+        run: npm install -g wait-on
+
+      - name: Esperar backend
+        run: wait-on tcp:6007
+
+      - name: Instalar dependencias frontend
+        run: |
+          cd app/frontend
+          npm install
+
+      - name: Levantar frontend
+        run: |
+          cd app/frontend
+          npm run dev > frontend.log 2>&1 &
+        env:
+          VITE_API_BASE: ${{ env.VITE_API_BASE }}
+
+      - name: Esperar frontend
+        run: wait-on http://localhost:3000
+
+      - name: Instalar y correr tests (proyectos setup + chromium)
+        run: |
+          npm install
+          npx playwright install
+          npx playwright test --reporter=html
+
+      - name: Guardar reportes como artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: ./playwright-report
+
+      - name: Deploy Playwright report to GitHub Pages
+        if: always()
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Clonar gh-pages branch en carpeta temporal
+          cd $RUNNER_TEMP
+          git clone --depth=1 --branch=gh-pages https://x-access-token:${{ secrets.GH_PAGES_PAT }}@github.com/${{ github.repository }} gh-pages
+
+          cd gh-pages
+
+          # Limpiar contenido viejo
+          rm -rf ./*
+
+          # Copiar nuevo contenido del reporte
+          mkdir -p report-${GITHUB_RUN_NUMBER}
+          cp -r $GITHUB_WORKSPACE/playwright-report/* ./report-${GITHUB_RUN_NUMBER}
+
+
+          # Commit y push
+          git add .
+          git commit -m "📊 Reporte Playwright - Build $GITHUB_RUN_NUMBER"
+          git push origin gh-pages
+
+      - name: Imprimir link del reporte en consola
+        if: always()
+        run: |
+            echo "🔗 Reporte disponible en: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/report-${{ github.run_number }}/"
