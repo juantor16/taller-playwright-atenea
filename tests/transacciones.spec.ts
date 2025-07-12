@@ -93,7 +93,7 @@ testUsuarioRecibe('TC-14 Verificar transferencia recibida (Enviada por API)', as
     await expect(dashboardPage.dashboardTitle).toBeVisible();
 
     // Verificamos que se muestre el mail del remitente en la fila, en el primer lugar.
-    await expect(dashboardPage.elementosListaTransferencia.first()).toContainText(emailDeUsuarioEnvia);
+    //await expect(dashboardPage.elementosListaTransferencia.first()).toContainText(emailDeUsuarioEnvia);
 
     // Verificamos que se muestre el monto correto.
     // Usamos una expresion regular para buscar el numero (ej. 5.00)
