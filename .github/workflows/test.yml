@@ -71,7 +71,7 @@ jobs:
         run: |
           sudo apt-get update
           # Instalar dependencias para navegadores de Playwright
-          sudo apt-get install -y libgtk-3-0 libgbm1 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+          sudo apt-get install -y libgtk-3-0 libgbm1 libnotify-dev libgconf-2-4 libnss3 libxss1 xvfb
           # Dependencias adicionales que podrían ser necesarias
           sudo apt-get install -y libwoff1 libopus0 libwebp6 libwebpdemux2 libenchant1c2a libgudev-1.0-0 libsecret-1-0 libhyphen0 libgdk-pixbuf2.0-0
 
