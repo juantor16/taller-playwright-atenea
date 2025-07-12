@@ -28,14 +28,14 @@ jobs:
 
             - name: Clonar repo Athena Redux Bank
               run: |
-                git clone git@github.com:Atenea-Conocimientos/redux-athena-bank.git
+                git clone git@github.com:Atenea-Conocimientos/redux-athena-bank.git app
         
             - name: Crear archivo .env para backend
               run: |
-                echo "MONGO_URI=${{ env.MONGO_URI }}" > backend/.env
-                echo "JWT_SECRET=${{ env.JWT_SECRET }}" >> backend/.env
-                echo "PORT=${{ env.PORT }}" >> backend/.env
-                echo "VITE_API_URL=${{ env.VITE_API_URL }}" >> backend/.env
+                echo "MONGO_URI=${{ env.MONGO_URI }}" > app/backend/.env
+                echo "JWT_SECRET=${{ env.JWT_SECRET }}" >> app/backend/.env
+                echo "PORT=${{ env.PORT }}" >> app/backend/.env
+                echo "VITE_API_URL=${{ env.VITE_API_URL }}" >> app/backend/.env
 
             - name: Instalar dependencias de backend
               run: |
