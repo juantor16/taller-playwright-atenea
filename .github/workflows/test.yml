@@ -67,10 +67,18 @@ jobs:
       - name: Esperar frontend
         run: wait-on http://localhost:3000
 
+      - name: Instalar dependencias de Playwright
+        run: |
+          sudo apt-get update
+          # Instalar dependencias para navegadores de Playwright
+          sudo apt-get install -y libgtk-3-0 libgbm1 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+          # Dependencias adicionales que podrían ser necesarias
+          sudo apt-get install -y libwoff1 libopus0 libwebp6 libwebpdemux2 libenchant1c2a libgudev-1.0-0 libsecret-1-0 libhyphen0 libgdk-pixbuf2.0-0
+
       - name: Instalar y correr tests (proyectos setup + chromium)
         run: |
           npm install
-          npx playwright install
+          npx playwright install --with-deps
           npx playwright test --reporter=html
       - name: Guardar reportes como artifacts
         if: always()
